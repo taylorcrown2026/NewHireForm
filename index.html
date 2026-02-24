@@ -206,15 +206,14 @@
       <!-- LEFT panel -->
       <section class="info">
         <div class="brand" aria-label="Concentra">
-          <!-- Use your uploaded logo: save as concentra-logo.png next to this HTML -->
           <img src="./concentra-logo.png" alt="Concentra" />
           <span>HR New Hire</span>
         </div>
 
         <h2 class="headline">Step through the essentials—one section at a time.</h2>
         <p class="sub">
-          This is Concentra’s HR New Hire Form. It will walk you through the steps to start the process of hiring a new colleague. 
-          Complete each section and submit to automatically route details to HR/IT via Outlook.
+          This is Concentra’s HR New Hire Form. It will walk you through the steps to start the process of hiring a new colleague.
+          Complete each section and submit to automatically route details to HR/IT via email.
         </p>
 
         <div class="card">
@@ -262,9 +261,9 @@
           <div class="wizard-header">
             <div class="steps" id="stepper">
               <div class="step active"><div class="dot">1</div><div class="label">Contact</div></div>
-              <div class="step"><div class="dot">2</div><div class="label">Role & Software</div></div>
+              <div class="step"><div class="dot">2</div><div class="label">Role &amp; Software</div></div>
               <div class="step"><div class="dot">3</div><div class="label">Equipment</div></div>
-              <div class="step"><div class="dot">4</div><div class="label">Notes & Submit</div></div>
+              <div class="step"><div class="dot">4</div><div class="label">Notes &amp; Submit</div></div>
             </div>
           </div>
 
@@ -407,7 +406,7 @@
                   </label>
                 </div>
               </div>
-              <div class="note">When you click Submit, your selections will be sent automatically to Outlook (tcrownover@concentra.com).</div>
+              <div class="note">When you click Submit, your selections will be sent automatically to tcrownover@concentra.com.</div>
             </div>
 
             <!-- ACTIONS -->
@@ -426,18 +425,11 @@
   </div>
 
   <script>
-
-// ======= CONFIGURE (Brevo Transactional Email API) =======
-const BREVO_ENDPOINT = 'https://api.brevo.com/v3/smtp/email';
-// ↓ Create a Brevo V3 API key (Dashboard → SMTP & API → API keys). 
-//    For quick testing you can paste it here, but best practice is to call a small backend so the key is not public.
-const BREVO_API_KEY = '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';  // looks like: xkeysib-xxxxxxxxxxxxxxxxxxxxxxxx
-// The sender MUST be a validated sender/domain in Brevo (Settings → Senders & domains).
-const BREVO_SENDER = { name: 'Concentra HR New Hire', email: 'no-reply@yourdomain.com' };
-// Recipient (your Outlook mailbox)
-const BREVO_TO = 'tcrownover@concentra.com';
-// ==========================================
-
+    // ======= CONFIG (Your private API endpoint) =======
+    // Replace with your Render Web Service URL after you deploy server.js
+    const API_ENDPOINT = 'https://YOUR-API-SERVICE.onrender.com/api/newhire-email';
+    const TO_EMAIL     = 'tcrownover@concentra.com';
+    // ================================================
 
     const wizard = document.getElementById('wizard');
     const panels = Array.from(wizard.querySelectorAll('.panel'));
@@ -564,7 +556,7 @@ const BREVO_TO = 'tcrownover@concentra.com';
     showPanel(0);
     calcTotal();
 
-    // Email builder
+    // Email builder (Outlook-safe table)
     const htmlEscape = s => String(s || '').replace(/[<>&]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
     function row(label, value){
       return '<tr>'+
@@ -611,7 +603,7 @@ const BREVO_TO = 'tcrownover@concentra.com';
       '</div>';
     }
 
-    // Submit — ALWAYS POST (no mailto fallback)
+    // Submit — POST to your private API (no API keys in browser)
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
       statusEl.textContent = 'Sending…';
@@ -621,11 +613,11 @@ const BREVO_TO = 'tcrownover@concentra.com';
       // Honeypot
       if (form.querySelector('input[name="website"]').value) return;
 
-      // Other software detail
+      // “Other” text required only if Other is checked
       const otherChecked = document.getElementById('swOther').checked;
       document.getElementById('otherSoftware').required = otherChecked;
 
-      // Enable everything for FormData + final validity
+      // Enable all fields for FormData capture
       panels.forEach(p => p.querySelectorAll('input, select, textarea').forEach(el => el.disabled = false));
 
       if (!form.checkValidity()){
@@ -636,67 +628,49 @@ const BREVO_TO = 'tcrownover@concentra.com';
         return;
       }
 
-      // accessories total
+      // Accessories total
       let sum = 0;
       document.querySelectorAll('#accessoriesList input[type="checkbox"]').forEach(b => { if (b.checked) sum += Number(b.dataset.price||0); });
 
       const fd = new FormData(form);
       fd.append('accessoriesTotal', sum.toFixed(2));
 
+      const emailHtml = buildEmail(fd);
       const payload = {
         to: TO_EMAIL,
         subject: 'New Hire — ' + (fd.get('fullName') || 'Submission'),
-        submittedAt: new Date().toISOString(),
-        data: Object.fromEntries(fd.entries()),
-        html: buildEmail(fd)
+        html: emailHtml
       };
 
-try{
-  if (!BREVO_API_KEY || BREVO_API_KEY.includes('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')) {
-    throw new Error('Brevo API key is not configured. Paste your Brevo V3 API key into BREVO_API_KEY.');
-  }
+      try{
+        const res = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok){
+          const txt = await res.text().catch(()=> '');
+          throw new Error(`API error (${res.status}): ${txt}`);
+        }
 
-  const res = await fetch(BREVO_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'api-key': BREVO_API_KEY,
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      sender: BREVO_SENDER,
-      to: [{ email: BREVO_TO, name: 'Taylor Crownover' }],
-      subject: payload.subject,
-      htmlContent: payload.html
-      // optional:
-      // replyTo: { email: 'your-mailbox@yourdomain.com', name: 'Concentra HR' },
-      // cc: [{ email: 'someoneelse@concentra.com' }]
-    })
-  });
+        statusEl.textContent = 'Submitted! Your email has been sent.';
+        statusEl.classList.add('success');
 
-  if (!res.ok){
-    const text = await res.text().catch(()=> '');
-    throw new Error(`Brevo send failed (${res.status}). ${text}`);
-  }
-
-  statusEl.textContent = 'Submitted! Your email has been sent.';
-  statusEl.classList.add('success');
-
-  // Reset wizard
-  form.reset();
-  toggleOther();
-  applyManagerRule();
-  applyAdvancedRule();
-  calcTotal();
-  showPanel(0);
-}catch(err){
-  console.error(err);
-  statusEl.textContent = 'Send failed: ' + err.message;
-  statusEl.classList.add('error');
-  setDisabledOutsideCurrent();
-}finally{
-  submitBtn.classList.remove('is-loading');
-}
+        // Reset wizard
+        form.reset();
+        toggleOther();
+        applyManagerRule();
+        applyAdvancedRule();
+        calcTotal();
+        showPanel(0);
+      }catch(err){
+        console.error(err);
+        statusEl.textContent = 'Send failed: ' + err.message;
+        statusEl.classList.add('error');
+        setDisabledOutsideCurrent();
+      }finally{
+        submitBtn.classList.remove('is-loading');
+      }
     });
   </script>
 </body>
