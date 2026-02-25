@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Portal — New Hire Queue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--line:#e7eaf3;--accent:#ff6a21;--ink:#101828;--muted:#667085}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f7f8fb;color:var(--ink)}
+    header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0}
+    .left{font-weight:800}
+    .right button{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff;cursor:pointer}
+    main{max-width:1200px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:2fr 1fr;gap:16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+    table{width:100%;border-collapse:collapse}
+    th, td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
+    tr:hover{background:#fafbff}
+    .steps{display:grid;gap:8px}
+    .step{display:flex;align-items:center;gap:10px}
+    .step input{accent-color:var(--accent)}
+    .muted{color:#667085}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left">Admin Portal — New Hire Queue</div>
+    <div class="right"><button id="logoutBtn">Logout</button></div>
+  </header>
+  <main>
+    <section class="card">
+      <h2 style="margin:0 0 8px">Submissions</h2>
+      <table id="tbl">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Job Title</th><th>Start</th><th>Office</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <aside class="card">
+      <h3 style="margin:0 0 8px">Status</h3>
+      <div id="statusPanel" class="muted">Select a submission…</div>
+    </aside>
+  </main>
+
+  <script>
+    const token = sessionStorage.getItem('admin_token');
+    if(!token){ location.replace('/admin-login.html'); }
+
+    document.getElementById('logoutBtn').onclick = () => { sessionStorage.removeItem('admin_token'); location.href='/admin-login.html'; };
+
+    const tbody = document.querySelector('#tbl tbody');
+    const panel = document.getElementById('statusPanel');
+
+    function esc(s){return String(s||'').replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+
+    async function fetchSubmissions(){
+      const res = await fetch('/api/admin/submissions', { headers:{ 'Authorization': 'Bearer '+token }});
+      if(!res.ok){ if(res.status===401){ sessionStorage.removeItem('admin_token'); location.href='/admin-login.html'; return; } throw new Error('Failed to load'); }
+      return res.json();
+    }
+
+    async function fetchStatus(id){
+      const res = await fetch(`/api/submission/${id}`);
+      if(!res.ok) throw new Error('Failed to load status');
+      return res.json();
+    }
+
+    function renderList(rows){
+      tbody.innerHTML = rows.map(r=>`<tr data-id="${r.id}" style="cursor:pointer"><td>${r.id}</td><td>${esc(r.fullName)}</td><td>${esc(r.personalEmail)}</td><td>${esc(r.jobTitle)}</td><td>${esc(r.startDate)}</td><td>${esc(r.office)}</td></tr>`).join('');
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{
+        tr.onclick = async () => {
+          const id = tr.getAttribute('data-id');
+          const data = await fetchStatus(id);
+          renderStatus(id, data);
+        };
+      });
+    }
+
+    async function updateStep(submissionId, stepIndex, isComplete){
+      const res = await fetch('/api/admin/update-status', {
+        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body: JSON.stringify({ submissionId, stepIndex, isComplete })
+      });
+      if(!res.ok){ throw new Error('Update failed'); }
+    }
+
+    function renderStatus(id, data){
+      const statusMap = new Map(data.status.map(x=>[x.stepIndex, x.isComplete]));
+      const html = data.steps.map((label, i)=>{
+        const idx = i+1; const checked = statusMap.get(idx) === 1 ? 'checked' : '';
+        return `<label class="step"><input type="checkbox" data-idx="${idx}" ${checked}> <span>${esc(label)}</span></label>`;
+      }).join('');
+      panel.innerHTML = `<div class="muted" style="margin-bottom:8px">Submission #${id}</div><div class="steps">${html}</div>`;
+      panel.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+        cb.onchange = async (e) => {
+          cb.disabled = true;
+          try{ await updateStep(id, Number(cb.dataset.idx), cb.checked); }
+          finally{ cb.disabled = false; }
+        }
+      });
+    }
+
+    (async () => {
+      try{
+        const rows = await fetchSubmissions();
+        renderList(rows);
+      }catch(e){
+        alert('Failed to load submissions');
+      }
+    })();
+  </script>
+</body>
+</html>

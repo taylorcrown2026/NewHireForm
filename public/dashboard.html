@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Concentra — New Hire Dashboard</title>
+  https://fonts.googleapis.com
+  https://fonts.gstatic.com
+  https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21;
+      --ink-2:#0f172a; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28);
+    }
+    *{box-sizing:border-box}
+    html, body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:28px}
+    .shell{max-width:1200px;margin:0 auto;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden;position:relative}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:#fff}
+    header .left{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink-2)}
+    header .right a{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
+    main{padding:28px;display:grid;grid-template-columns:1.05fr 1fr;gap:24px}
+    @media (max-width:980px){main{grid-template-columns:1fr}}
+    .info{display:flex;flex-direction:column;gap:14px}
+    .headline{font-size:clamp(20px,3vw,28px);margin:6px 0 4px}
+    .sub{color:var(--muted);max-width:60ch}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px}
+
+    .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 12px 28px rgba(16,24,40,.08);overflow:hidden}
+    .panel header{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;font-weight:800}
+    .panel .body{padding:18px}
+
+    .finder{display:flex;gap:10px}
+    input[type="text"], input[type="number"]{border:1px solid var(--line);border-radius:14px;padding:12px 12px;font-size:16px;outline:none}
+    input:focus{border-color:#ff8a4a;box-shadow:var(--focus)}
+    .btn{appearance:none;border:none;border-radius:999px;background:var(--accent);color:#fff;padding:12px 18px;font-weight:900;cursor:pointer}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+    .steps{display:grid;gap:10px;margin-top:8px}
+    .step{display:flex;align-items:center;gap:10px}
+    .dot{width:22px;height:22px;border-radius:50%;border:2px solid #d1d5db;display:grid;place-items:center;font-size:12px;color:#6b7280}
+    .done .dot{background:#16a34a;border-color:#16a34a;color:#fff}
+    .done .label{color:#111}
+    .label{color:#475467}
+    .meta{color:#667085}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="left">New Hire Dashboard</div>
+      <div class="right">/admin-login.htmlAdmin Login</a></div>
+    </header>
+
+    <main>
+      <section class="info">
+        <h2 class="headline">Track your request in real time.</h2>
+        <p class="sub">Paste your <strong>Submission ID</strong> if it’s not prefilled, then view the 8‑step progress below.</p>
+        <div class="card">
+          <div><strong>Tip</strong><div class="meta">You can bookmark the dashboard URL with your Submission ID for quick access later.</div></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header>Lookup</header>
+        <div class="body">
+          <div class="finder" style="margin-bottom:12px">
+            <input id="subIdInput" placeholder="Submission ID" />
+            <button class="btn" id="loadBtn">Load</button>
+          </div>
+          <div id="content"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const content = document.getElementById('content');
+    function q(k){return new URLSearchParams(location.search).get(k)}
+    function esc(s){return String(s||'').replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+
+    async function load(id){
+      if(!id){ content.innerHTML = '<p class="meta">Provide a Submission ID to view status.</p>'; return; }
+      content.innerHTML = '<p class="meta">Loading...</p>';
+      try{
+        const res = await fetch(`/api/submission/${encodeURIComponent(id)}`);
+        if(!res.ok){ throw new Error('Not found'); }
+        const data = await res.json();
+        const s = data.submission;
+        const statusMap = new Map(data.status.map(x=>[x.stepIndex, x.isComplete]));
+        const stepsHtml = data.steps.map((label, i)=>{
+          const idx = i+1;
+          const done = statusMap.get(idx) === 1;
+          return `<div class="step ${done?'done':''}"><div class="dot">${idx}</div><div class="label">${esc(label)}</div></div>`
+        }).join('');
+        content.innerHTML = `
+          <div class="panel" style="margin-top:4px">
+            <header>Submission Summary</header>
+            <div class="body">
+              <div class="row">
+                <div>
+                  <div><strong>Name:</strong> ${esc(s.fullName)}</div>
+                  <div><strong>Personal Email:</strong> ${esc(s.personalEmail)}</div>
+                  <div><strong>Job Title:</strong> ${esc(s.jobTitle)}</div>
+                </div>
+                <div>
+                  <div><strong>Start Date:</strong> ${esc(s.startDate)}</div>
+                  <div><strong>Office:</strong> ${esc(s.office)}</div>
+                  <div><strong>Submission ID:</strong> ${esc(s.id)}</div>
+                </div>
+              </div>
+              <h3 style="margin:12px 0 6px">Progress</h3>
+              <div class="steps">${stepsHtml}</div>
+            </div>
+          </div>
+        `;
+      }catch(e){
+        content.innerHTML = '<p class="meta">Submission not found.</p>';
+      }
+    }
+
+    const idFromUrl = q('id');
+    if(idFromUrl){
+      document.getElementById('subIdInput').value = idFromUrl;
+      load(idFromUrl);
+    }
+    document.getElementById('loadBtn').onclick = () => load(document.getElementById('subIdInput').value.trim());
+  </script>
+</body>
+</html>

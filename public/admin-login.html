@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Concentra — Admin Login</title>
+  https://fonts.googleapis.com
+  https://fonts.gstatic.com
+  https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap
+  <style>
+    :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28); }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;padding:28px;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:grid;place-items:center}
+    .shell{width:100%;max-width:560px;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden}
+    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800}
+    .body{padding:18px}
+    label{display:block;margin:0 0 6px 2px;font-size:13px;color:#344054;font-weight:800}
+    input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 12px;font-size:16px;outline:none;background:#fff;color:#101828}
+    input:focus{border-color:#ff8a4a;box-shadow:var(--focus)}
+    .btn{margin-top:14px;appearance:none;border:none;border-radius:999px;background:var(--accent);color:#fff;padding:12px 16px;font-weight:900;cursor:pointer;width:100%;box-shadow:0 8px 16px rgba(255,106,33,.25)}
+    .meta{min-height:20px;font-size:13px;color:#667085;margin-top:8px}
+    .meta.error{color:#dc2626}
+    .footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+    .link{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>Admin Login</header>
+    <div class="body">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="admin@example.com" />
+      <label for="password">Password</label>
+      <input id="password" type="password" />
+      <button class="btn" id="loginBtn">Login</button>
+      <div class="meta" id="status"></div>
+    </div>
+    <div class="footer">
+      <a class="link" href="/dashboard.html">Back to Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginBtn').onclick = async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const status = document.getElementById('status');
+      status.textContent = '';
+      try{
+        const res = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password})});
+        if(!res.ok){ throw new Error('Invalid login'); }
+        const data = await res.json();
+        sessionStorage.setItem('admin_token', data.token);
+        location.href = '/admin-portal.html';
+      }catch(e){
+        status.textContent = e.message;
+        status.className = 'meta error';
+      }
+    }
+  </script>
+</body>
+</html>
