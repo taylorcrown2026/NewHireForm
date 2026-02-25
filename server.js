@@ -1,40 +1,31 @@
-// Minimal Express API to forward New Hire emails via Brevo (Sendinblue) Transactional API
-// Keep your BREVO_API_KEY in Render environment variables (never in client-side JS).
 
+// Minimal Express API to forward New Hire emails via Brevo (Sendinblue)
 import express from 'express';
 import cors from 'cors';
 
-// If your Node runtime is < 18, uncomment the next line and add node-fetch to package.json
-// import fetch from 'node-fetch';
-
 const app = express();
 app.use(express.json({ limit: '200kb' }));
+app.use(express.static('public'));
 
-// Restrict CORS to your static site's origin (set CORS_ORIGIN in Render)
 const allowedOrigin = process.env.CORS_ORIGIN || '*';
-app.use(cors({
-  origin: allowedOrigin,
-  methods: ['POST', 'GET'],
-  allowedHeaders: ['Content-Type']
-}));
+app.use(cors({ origin: allowedOrigin, methods: ['POST','GET'], allowedHeaders: ['Content-Type','Authorization'] }));
 
-// Health check
-app.get('/', (_req, res) => res.send('New Hire API up'));
+// Health & helpful message for accidental visits
+app.get('/', (_req, res) => {
+  res.type('text/plain').send('New Hire API up. POST /api/newhire-email to send email.');
+});
+app.get('/health', (_req, res) => res.json({ ok: true }));
 
-// Main endpoint
 app.post('/api/newhire-email', async (req, res) => {
   try {
     const { to, subject, html } = req.body || {};
-    if (!to || !subject || !html) {
-      return res.status(400).json({ error: 'Missing to/subject/html' });
-    }
+    if (!to || !subject || !html) return res.status(400).json({ error: 'Missing to/subject/html' });
 
     const apiKey = process.env.BREVO_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'Server not configured (missing BREVO_API_KEY)' });
+
     const senderEmail = process.env.SENDER_EMAIL || 'no-reply@yourdomain.com';
-    const senderName  = process.env.SENDER_NAME  || 'Concentra HR New Hire';
-    if (!apiKey) {
-      return res.status(500).json({ error: 'Server not configured (missing BREVO_API_KEY)' });
-    }
+    const senderName  = process.env.SENDER_NAME || 'Concentra HR New Hire';
 
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
@@ -52,9 +43,7 @@ app.post('/api/newhire-email', async (req, res) => {
     });
 
     const text = await r.text();
-    if (!r.ok) {
-      return res.status(r.status).send(text);
-    }
+    if (!r.ok) return res.status(r.status).send(text);
 
     return res.status(200).send(text);
   } catch (e) {
