@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — New Hire Dashboard</title>
 
+  <!-- Fast, inline-first page -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
@@ -23,7 +24,6 @@
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       padding:28px;
     }
-
     .shell{
       max-width:1200px; margin:0 auto;
       background:linear-gradient(180deg,#ffffff,#fbfcff);
@@ -60,6 +60,7 @@
     .finder input[type="text"]{
       flex:1 1 220px; min-width:220px;
       border:1px solid var(--line); border-radius:14px; padding:12px 12px; font-size:16px; outline:none;
+      background:#fff; color:#101828;
     }
     .finder input:focus{border-color:#ff8a4a; box-shadow:var(--focus)}
     .btn{appearance:none; border:none; border-radius:999px; background:var(--accent); color:#fff; padding:12px 18px; font-weight:900; cursor:pointer}
@@ -70,7 +71,6 @@
     /* Summary grid */
     .row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0}
     @media (max-width:680px){ .row{ grid-template-columns:1fr } }
-
     .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
     .chip{
       border:1px solid var(--line); border-radius:999px; padding:6px 10px; font-size:13px;
@@ -96,7 +96,7 @@
     <header class="top">
       <div class="title">New Hire Dashboard</div>
       <nav class="nav">
-        <a href="/">New Hire Form</a>
+        <a href="/index.html">New Hire Form</a>
         <a href="/admin-login.html">Admin Login</a>
       </nav>
     </header>
@@ -106,11 +106,12 @@
       <section class="info">
         <h2 class="headline">Track your request in real time.</h2>
         <p class="sub">
-          Paste your <strong>Submission ID</strong> (or open this page from the form’s success modal). You’ll see step-by-step status and a clean summary.
+          Paste your <strong>Submission ID</strong> (or open this page from the form’s success dialog).
+          You’ll see step‑by‑step status and a clear summary.
         </p>
         <div class="callout">
           <strong>Tip</strong>
-          <div class="muted">Bookmark this page with your Submission ID in the URL for one-click access later.</div>
+          <div class="muted">Bookmark this page with your Submission ID in the URL for one‑click access later.</div>
         </div>
       </section>
 
@@ -135,21 +136,22 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    (function () {
       const statusEl = document.getElementById('status');
       const content = document.getElementById('content');
       const idInput = document.getElementById('subIdInput');
       const loadBtn = document.getElementById('loadBtn');
       const refreshBtn = document.getElementById('refreshBtn');
       const autoRefresh = document.getElementById('autoRefresh');
-
       let timer = null;
+
       function q(k){ return new URLSearchParams(location.search).get(k) }
       function esc(s){ return String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) }
       const plural = (n, w) => `${n} ${w}${n===1?'':'s'}`;
       function timeAgo(iso){
         if(!iso) return '';
         const then = new Date(iso).getTime();
+        if (Number.isNaN(then)) return '';
         const now = Date.now();
         const secs = Math.max(0, Math.floor((now-then)/1000));
         if (secs < 60) return plural(secs,'sec') + ' ago';
@@ -157,9 +159,8 @@
         const hrs = Math.floor(mins/60); if (hrs < 24) return plural(hrs,'hour') + ' ago';
         const days = Math.floor(hrs/24); return plural(days,'day') + ' ago';
       }
-
       function renderList(list, emptyLabel){
-        if(!list || !list.length) return `<span class="muted">${esc(emptyLabel)}</span>`;
+        if (!list || !list.length) return `<span class="muted">${esc(emptyLabel)}</span>`;
         return list.map(x => `<span class="chip">${esc(x)}</span>`).join('');
       }
 
@@ -176,22 +177,27 @@
           content.innerHTML = '';
         }
         try{
-          const res = await fetch(`/api/submission/${encodeURIComponent(id)}`);
-          if(!res.ok) throw new Error('Submission not found.');
+          const res = await fetch(`/api/submission/${encodeURIComponent(id)}`, { credentials: 'same-origin' });
+          if(!res.ok) {
+            // 404 or other error
+            const msg = res.status === 404 ? 'Submission not found.' : 'Failed to load submission.';
+            throw new Error(msg);
+          }
+
           const data = await res.json();
-
           const s = data.submission || {};
-          const steps = data.steps || [];
-          const statusMap = new Map((data.status||[]).map(x => [x.stepIndex, x.isComplete]));
+          const steps = Array.isArray(data.steps) ? data.steps : [];
+          const statusRows = Array.isArray(data.status) ? data.status : [];
+          const statusMap = new Map(statusRows.map(x => [Number(x.stepIndex), Number(x.isComplete)]));
 
-          // Parse JSON arrays safely (in case backend returns strings)
+          // Parse arrays if stored as JSON strings in DB
           const eq = Array.isArray(s.equipment) ? s.equipment
-                    : (typeof s.equipment === 'string' && s.equipment.trim().startsWith('[') ? JSON.parse(s.equipment) : []);
+                   : (typeof s.equipment === 'string' && s.equipment.trim().startsWith('[') ? JSON.parse(s.equipment) : []);
           const sw = Array.isArray(s.software) ? s.software
-                    : (typeof s.software === 'string' && s.software.trim().startsWith('[') ? JSON.parse(s.software) : []);
+                   : (typeof s.software === 'string' && s.software.trim().startsWith('[') ? JSON.parse(s.software) : []);
 
           const stepsHtml = steps.map((label, i)=>{
-            const idx = i+1;
+            const idx = i + 1; // stepIndex is 1-based in your DB
             const done = statusMap.get(idx) === 1;
             return `
               <div class="step ${done?'done':''}">
@@ -249,8 +255,9 @@
             copyBtn.addEventListener('click', async () => {
               try {
                 await navigator.clipboard.writeText(String(s.id));
+                const old = copyBtn.textContent;
                 copyBtn.textContent = 'Copied';
-                setTimeout(()=> copyBtn.textContent = 'Copy', 1200);
+                setTimeout(()=> copyBtn.textContent = old, 1200);
               } catch(_) {}
             });
           }
@@ -285,9 +292,7 @@
           timer = setInterval(() => load(idInput.value.trim(), {silent:true}), 10_000);
         }
       });
-      // If URL had an id, we can default auto-refresh on (optional):
-      // autoRefresh.checked = !!idFromUrl; autoRefresh.dispatchEvent(new Event('change'));
-    });
+    })();
   </script>
 </body>
 </html>

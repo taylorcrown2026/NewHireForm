@@ -5,97 +5,168 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — Admin Login</title>
 
+  <!-- Minimal, fast loading -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
   <style>
-    :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28); --err:#dc2626; }
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085;
+      --accent:#ff6a21; --line:#e7eaf3; --radius:18px;
+      --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28);
+      --err:#dc2626; --ok:#16a34a;
+    }
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;padding:28px;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:grid;place-items:center}
-    .shell{width:100%;max-width:560px;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden}
-    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center;background:#fff}
+    body{
+      margin:0;min-height:100vh;padding:28px;background:var(--bg);color:var(--ink);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      display:grid;place-items:center
+    }
+    .shell{
+      width:100%;max-width:560px;background:linear-gradient(180deg,#ffffff,#fbfcff);
+      border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);
+      box-shadow:var(--shadow);overflow:hidden
+    }
+    header{
+      padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;
+      display:flex;justify-content:space-between;align-items:center;background:#fff
+    }
     header nav{display:flex;gap:10px}
-    .link{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
+    .link{
+      font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);
+      padding:8px 12px;border-radius:999px;background:#fff
+    }
     .body{padding:18px}
     label{display:block;margin:0 0 6px 2px;font-size:13px;color:#344054;font-weight:800}
-    input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 12px;font-size:16px;outline:none;background:#fff;color:#101828}
+    input{
+      width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 12px;
+      font-size:16px;outline:none;background:#fff;color:#101828
+    }
     input:focus{border-color:#ff8a4a;box-shadow:var(--focus)}
-    .btn{margin-top:14px;appearance:none;border:none;border-radius:999px;background:var(--accent);color:#fff;padding:12px 16px;font-weight:900;cursor:pointer;width:100%;box-shadow:0 8px 16px rgba(255,106,33,.25)}
+    .row{display:grid;gap:10px}
+    .btn{
+      margin-top:14px;appearance:none;border:none;border-radius:999px;background:var(--accent);
+      color:#fff;padding:12px 16px;font-weight:900;cursor:pointer;width:100%;
+      box-shadow:0 8px 16px rgba(255,106,33,.25)
+    }
     .meta{min-height:20px;font-size:13px;color:#667085;margin-top:8px}
     .meta.error{color:var(--err)}
-    .footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;background:#fff}
+    .meta.ok{color:var(--ok)}
+    .footer{
+      padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;background:#fff
+    }
+    .small{font-size:12px;color:#667085}
   </style>
 </head>
 <body>
-  <div class="shell">
+  <div class="shell" role="application" aria-label="Admin Login">
     <header>
       <div>Admin Login</div>
       <nav>
-        <a class="link" href="/">New Hire Form</a>
+        <!-- These two files live in /public already per your setup -->
+        <a class="link" href="/index.html">New Hire Form</a>
         <a class="link" href="/dashboard.html">Dashboard</a>
       </nav>
     </header>
 
     <div class="body">
-      <label for="email">Email</label>
-      <input id="email" type="email" placeholder="admin@example.com" autocomplete="username" />
-      <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password" />
-      <button class="btn" id="loginBtn">Login</button>
-      <div class="meta" id="status"></div>
+      <div class="row">
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="admin@example.com" autocomplete="username" required />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required />
+        </div>
+      </div>
+      <button class="btn" id="loginBtn" aria-label="Log in">Login</button>
+      <div class="meta" id="status" role="status" aria-live="polite"></div>
+      <div class="small">Tip: the default admin is created when <code>ADMIN_EMAIL</code> and <code>ADMIN_PASSWORD</code> are set in your <code>.env</code>.</div>
     </div>
 
     <div class="footer">
-      <a class="link" href="/">Back to New Hire Form</a>
+      <a class="link" href="/index.html">Back to New Hire Form</a>
+      <!-- Optional: quick link to admin portal if token already present -->
+      <a class="link" href="/admin-portal.html" id="portalLink" hidden>Go to Admin Portal</a>
     </div>
   </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("admin-login: script loaded");
+  <script>
+    (function () {
+      const emailEl = document.getElementById('email');
+      const passEl = document.getElementById('password');
+      const btn = document.getElementById('loginBtn');
+      const status = document.getElementById('status');
+      const portalLink = document.getElementById('portalLink');
 
-  const emailEl = document.getElementById('email');
-  const passEl  = document.getElementById('password');
-  const btn     = document.getElementById('loginBtn');
-  const status  = document.getElementById('status');
+      // If token exists from a previous session, show quick link
+      try {
+        const token = sessionStorage.getItem('admin_token');
+        if (token) portalLink.hidden = false;
+      } catch(_) {}
 
-  async function doLogin() {
-    const email = (emailEl.value || '').trim();
-    const password = passEl.value || '';
-    status.className = 'meta';
-    status.textContent = '';
+      async function doLogin() {
+        status.className = 'meta';
+        status.textContent = '';
 
-    if (!email || !password) {
-      status.className = 'meta error';
-      status.textContent = 'Email and password are required.';
-      return;
-    }
+        const email = (emailEl.value || '').trim();
+        const password = passEl.value || '';
 
-    try {
-      const res = await fetch('/api/admin/login', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({email, password})
-      });
-      if(!res.ok){
-        const txt = await res.text();
-        throw new Error(txt || 'Invalid login');
+        if (!email || !password) {
+          status.className = 'meta error';
+          status.textContent = 'Email and password are required.';
+          return;
+        }
+
+        // Optional: basic rate-limit feedback (client-side) to match server limiter
+        btn.disabled = true;
+        btn.textContent = 'Signing in…';
+
+        try {
+          // NOTE: Path is relative to the same origin. This will hit your Express route /api/admin/login.
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+            credentials: 'same-origin',
+          });
+
+          if (!res.ok) {
+            // Try to show server message when available
+            let msg = 'Invalid login.';
+            try {
+              const t = await res.json();
+              if (t && t.error) msg = t.error;
+            } catch {}
+            throw new Error(msg);
+          }
+
+          const data = await res.json();
+          sessionStorage.setItem('admin_token', data.token);
+
+          status.className = 'meta ok';
+          status.textContent = 'Login successful. Redirecting…';
+          // Reveal quick link immediately (in case redirect is blocked by popup rules)
+          portalLink.hidden = false;
+
+          // Navigate to admin portal page (served from /public/admin-portal.html)
+          window.location.assign('/admin-portal.html');
+        } catch (e) {
+          status.className = 'meta error';
+          status.textContent = e && e.message ? e.message : 'Login failed.';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Login';
+        }
       }
-      const data = await res.json();
-      sessionStorage.setItem('admin_token', data.token);
-      location.href = '/admin-portal.html';
-    } catch(e) {
-      status.className = 'meta error';
-      status.textContent = e.message || 'Login failed';
-    }
-  }
 
-  btn.addEventListener('click', doLogin);
-  // Press Enter to submit from either field
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') doLogin();
-  });
-});
-</script>
+      btn.addEventListener('click', doLogin);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doLogin();
+      });
+    })();
+  </script>
 </body>
 </html>

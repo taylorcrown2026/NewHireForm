@@ -2,114 +2,325 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Portal — New Hire Queue</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Concentra — Admin Portal</title>
+
+  <!-- Optional webfonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
   <style>
-    :root{--line:#e7eaf3;--accent:#ff6a21;--ink:#101828;--muted:#667085}
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21;
+      --ink-2:#0f172a; --line:#e7eaf3; --radius:18px;
+      --shadow:0 12px 36px rgba(16,24,40,.10); --focus:0 0 0 3px rgba(255,106,33,.28);
+      --success:#16a34a; --error:#dc2626; --warning:#f59e0b;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f7f8fb;color:var(--ink)}
-    header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0}
-    .left{font-weight:800}
-    .right button{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff;cursor:pointer}
-    main{max-width:1200px;margin:20px auto;padding:0 16px;display:grid;grid-template-columns:2fr 1fr;gap:16px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
-    table{width:100%;border-collapse:collapse}
-    th, td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left}
-    tr:hover{background:#fafbff}
-    .steps{display:grid;gap:8px}
-    .step{display:flex;align-items:center;gap:10px}
-    .step input{accent-color:var(--accent)}
-    .muted{color:#667085}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      padding:28px;
+    }
+    .shell{
+      max-width:1300px; margin:0 auto;
+      background:linear-gradient(180deg,#ffffff,#fbfcff);
+      border:1px solid var(--line);
+      border-radius:calc(var(--radius) + 6px);
+      box-shadow:var(--shadow); overflow:hidden;
+    }
+    header.top{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:16px 18px; border-bottom:1px solid var(--line); background:#fff;
+    }
+    .title{font-weight:800; color:var(--ink-2)}
+    .nav{display:flex; gap:10px; align-items:center}
+    .nav a{
+      font-weight:800; color:#111; text-decoration:none;
+      border:1px solid var(--line); padding:8px 12px; border-radius:999px; background:#fff;
+    }
+    .nav button{
+      appearance:none; border:1px solid var(--line); background:#fff; color:#111;
+      padding:8px 12px; border-radius:999px; font-weight:800; cursor:pointer;
+    }
+    main{display:grid; grid-template-columns: 1fr; gap:16px; padding:18px;}
+    .panel{background:#fff; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden}
+    .panel header{display:flex; justify-content:space-between; align-items:center; gap:10px;
+      background:#fff; border-bottom:1px solid var(--line); padding:12px 14px; font-weight:800}
+    .panel .body{padding:14px}
+    .status{min-height:20px; font-size:13px; color:#667085}
+    .status.error{color:var(--error)}
+    .status.ok{color:var(--success)}
+
+    /* table */
+    table{width:100%; border-collapse:separate; border-spacing:0; font-size:14px}
+    thead th{
+      text-align:left; padding:10px 10px; color:#475467; border-bottom:1px solid var(--line);
+      position:sticky; top:0; background:#fff; z-index:1;
+    }
+    tbody td{padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+    tbody tr:hover{background:#fafafa}
+    .sm{font-size:12px; color:#667085}
+    .chips{display:flex; gap:6px; flex-wrap:wrap}
+    .chip{border:1px solid var(--line); border-radius:999px; padding:4px 8px; background:#fff; font-size:12px}
+    .steps{display:flex; gap:6px; flex-wrap:wrap}
+    .step{
+      display:inline-flex; align-items:center; gap:6px;
+      border:1px solid var(--line); border-radius:999px; padding:6px 10px; background:#fff;
+    }
+    .step.done{border-color:var(--success); background:rgba(22,163,74,.08)}
+    .btn{appearance:none; border:none; border-radius:999px; background:var(--accent); color:#fff; padding:10px 14px; font-weight:900; cursor:pointer}
+    .btn.secondary{background:#fff; color:#111; border:1px solid var(--line)}
+    .toolbar{display:flex; gap:10px; align-items:center}
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr } }
+    .searchBox input{
+      width:100%; border:1px solid var(--line); border-radius:14px; padding:10px 12px; font-size:14px;
+      outline:none; background:#fff; color:#101828;
+    }
+    .searchBox input:focus{border-color:#ff8a4a; box-shadow:var(--focus)}
+    .badge{display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--line); background:#fff}
+    .badge.alert{border-color:var(--warning); color:#b45309; background:#fff7ed}
+    .nowrap{white-space:nowrap}
   </style>
 </head>
 <body>
-  <header>
-    <div class="left">Admin Portal — New Hire Queue</div>
-    <div class="right"><button id="logoutBtn">Logout</button></div>
-  </header>
-  <main>
-    <section class="card">
-      <h2 style="margin:0 0 8px">Submissions</h2>
-      <table id="tbl">
-        <thead>
-          <tr><th>ID</th><th>Name</th><th>Email</th><th>Job Title</th><th>Start</th><th>Office</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-    <aside class="card">
-      <h3 style="margin:0 0 8px">Status</h3>
-      <div id="statusPanel" class="muted">Select a submission…</div>
-    </aside>
-  </main>
+  <div class="shell">
+    <header class="top">
+      <div class="title">Admin Portal</div>
+      <nav class="nav">
+        <a href="/index.html">New Hire Form</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/admin-login.html">Admin Login</a>
+        <button id="logoutBtn" title="Clear token and return to login">Log out</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel">
+        <header>
+          <div>Submissions</div>
+          <div class="toolbar">
+            <div class="searchBox">
+              <input id="q" type="search" placeholder="Search name, email, job title, office…" />
+            </div>
+            <button id="refreshBtn" class="btn secondary">Refresh</button>
+          </div>
+        </header>
+        <div class="body">
+          <div id="status" class="status"></div>
+          <div class="grid">
+            <div class="sm">Tip: Click steps to toggle completion.</div>
+            <div class="sm" style="text-align:right">Auto‑refresh every
+              <span class="badge">30s</span> <span id="autoHint" class="badge alert nowrap" style="display:none">No token — login required</span>
+            </div>
+          </div>
+          <div style="overflow:auto; max-height:70vh; border:1px solid var(--line); border-radius:12px;">
+            <table id="tbl">
+              <thead>
+                <tr>
+                  <th style="min-width:140px">Name</th>
+                  <th style="min-width:140px">Email</th>
+                  <th style="min-width:110px">Start</th>
+                  <th style="min-width:140px">Role</th>
+                  <th style="min-width:110px">Office</th>
+                  <th style="min-width:200px">Software</th>
+                  <th style="min-width:220px">Equipment</th>
+                  <th style="min-width:360px">Progress</th>
+                  <th style="min-width:90px">ID</th>
+                </tr>
+              </thead>
+              <tbody id="rows">
+                <!-- injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
-    const token = sessionStorage.getItem('admin_token');
-    if(!token){ location.replace('/admin-login.html'); }
+    (function () {
+      const statusEl = document.getElementById('status');
+      const rowsEl = document.getElementById('rows');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const q = document.getElementById('q');
+      const autoHint = document.getElementById('autoHint');
 
-    document.getElementById('logoutBtn').onclick = () => { sessionStorage.removeItem('admin_token'); location.href='/admin-login.html'; };
+      const STEPS = [
+        "Not Started - Step 1 of 8",
+        "Under Initial Review Status - Step 2 of 8",
+        "Under Manager Approval - Step 3 of 8",
+        "Equipment Processing - Step 4 of 8",
+        "Equipment Out For Delivery - Step 5 of 8",
+        "Equipment Delivered- Step 6 of 8",
+        "New Hire Set Up Completed - Step 7 of 8",
+        "New Hire Completed - Step 8 of 8"
+      ];
 
-    const tbody = document.querySelector('#tbl tbody');
-    const panel = document.getElementById('statusPanel');
+      let token = null;
+      let timer = null;
+      let cache = [];
 
-    function esc(s){return String(s||'').replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
-
-    async function fetchSubmissions(){
-      const res = await fetch('/api/admin/submissions', { headers:{ 'Authorization': 'Bearer '+token }});
-      if(!res.ok){ if(res.status===401){ sessionStorage.removeItem('admin_token'); location.href='/admin-login.html'; return; } throw new Error('Failed to load'); }
-      return res.json();
-    }
-
-    async function fetchStatus(id){
-      const res = await fetch(`/api/submission/${id}`);
-      if(!res.ok) throw new Error('Failed to load status');
-      return res.json();
-    }
-
-    function renderList(rows){
-      tbody.innerHTML = rows.map(r=>`<tr data-id="${r.id}" style="cursor:pointer"><td>${r.id}</td><td>${esc(r.fullName)}</td><td>${esc(r.personalEmail)}</td><td>${esc(r.jobTitle)}</td><td>${esc(r.startDate)}</td><td>${esc(r.office)}</td></tr>`).join('');
-      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{
-        tr.onclick = async () => {
-          const id = tr.getAttribute('data-id');
-          const data = await fetchStatus(id);
-          renderStatus(id, data);
-        };
-      });
-    }
-
-    async function updateStep(submissionId, stepIndex, isComplete){
-      const res = await fetch('/api/admin/update-status', {
-        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-        body: JSON.stringify({ submissionId, stepIndex, isComplete })
-      });
-      if(!res.ok){ throw new Error('Update failed'); }
-    }
-
-    function renderStatus(id, data){
-      const statusMap = new Map(data.status.map(x=>[x.stepIndex, x.isComplete]));
-      const html = data.steps.map((label, i)=>{
-        const idx = i+1; const checked = statusMap.get(idx) === 1 ? 'checked' : '';
-        return `<label class="step"><input type="checkbox" data-idx="${idx}" ${checked}> <span>${esc(label)}</span></label>`;
-      }).join('');
-      panel.innerHTML = `<div class="muted" style="margin-bottom:8px">Submission #${id}</div><div class="steps">${html}</div>`;
-      panel.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
-        cb.onchange = async (e) => {
-          cb.disabled = true;
-          try{ await updateStep(id, Number(cb.dataset.idx), cb.checked); }
-          finally{ cb.disabled = false; }
+      function esc(s){ return String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])) }
+      function arr(v){
+        if (Array.isArray(v)) return v;
+        if (typeof v === 'string' && v.trim().startsWith('[')) {
+          try { return JSON.parse(v) } catch {}
         }
-      });
-    }
+        return [];
+      }
+      function setStatus(msg, cls){
+        statusEl.className = 'status' + (cls ? ' ' + cls : '');
+        statusEl.textContent = msg || '';
+      }
 
-    (async () => {
-      try{
-        const rows = await fetchSubmissions();
-        renderList(rows);
-      }catch(e){
-        alert('Failed to load submissions');
+      function requireTokenOrRedirect(){
+        try { token = sessionStorage.getItem('admin_token'); } catch(_) {}
+        if (!token) {
+          setStatus('No admin token found. Redirecting to login…', 'error');
+          autoHint.style.display = 'inline-block';
+          setTimeout(()=> location.href = '/admin-login.html', 800);
+          return false;
+        }
+        autoHint.style.display = 'none';
+        return true;
+      }
+
+      async function fetchAll(){
+        if (!requireTokenOrRedirect()) return;
+        setStatus('Loading…');
+        try{
+          const res = await fetch('/api/admin/submissions', {
+            headers: { 'Authorization': 'Bearer ' + token }
+          });
+          if (!res.ok) {
+            // token may be invalid/expired
+            if (res.status === 401) {
+              setStatus('Session expired. Redirecting to login…', 'error');
+              setTimeout(()=> location.href = '/admin-login.html', 800);
+              return;
+            }
+            throw new Error('Failed to load submissions');
+          }
+          const data = await res.json();
+          cache = Array.isArray(data) ? data : [];
+          render(cache, q.value);
+          setStatus('Loaded.', 'ok');
+        }catch(e){
+          setStatus(e.message || 'Error loading submissions', 'error');
+        }
+      }
+
+      function render(list, term){
+        const t = (term||'').toLowerCase().trim();
+        const filtered = t
+          ? list.filter(s =>
+              [s.fullName, s.personalEmail, s.jobTitle, s.office]
+                .some(v => String(v||'').toLowerCase().includes(t))
+            )
+          : list;
+
+        rowsEl.innerHTML = filtered.map(s => {
+          const sw = arr(s.software);
+          const eq = arr(s.equipment);
+          const progress = renderSteps(s.id); // placeholder; filled after DOM set
+          return `
+            <tr data-id="${s.id}">
+              <td><strong>${esc(s.fullName)}</strong><div class="sm">${esc(s.department||'')}</div></td>
+              <td>${esc(s.personalEmail||'')}</td>
+              <td class="nowrap">${esc(s.startDate||'')}</td>
+              <td>${esc(s.jobTitle||'')}</td>
+              <td>${esc(s.office||'')}</td>
+              <td><div class="chips">${sw.map(x=>`<span class="chip">${esc(x)}</span>`).join('') || '<span class="sm">—</span>'}</div></td>
+              <td><div class="chips">${eq.map(x=>`<span class="chip">${esc(x)}</span>`).join('') || '<span class="sm">—</span>'}</div></td>
+              <td data-progress></td>
+              <td class="nowrap">${esc(s.id)}</td>
+            </tr>
+          `;
+        }).join('');
+
+        // After rows set, fetch each row's status and render toggles
+        filtered.forEach(s => loadRowProgress(s.id));
+      }
+
+      async function loadRowProgress(submissionId){
+        try{
+          const res = await fetch(`/api/status/${encodeURIComponent(submissionId)}`, { credentials:'same-origin' });
+          if (!res.ok) throw new Error('Failed to load status');
+          const rows = await res.json(); // [{ stepIndex, isComplete }]
+          const map = new Map(rows.map(r => [Number(r.stepIndex), Number(r.isComplete)]));
+          const td = document.querySelector(`tr[data-id="${submissionId}"] td[data-progress]`);
+          if (!td) return;
+          td.innerHTML = STEPS.map((label, idx) => {
+            const stepIndex = idx + 1;
+            const done = map.get(stepIndex) === 1;
+            return `
+              <button class="step ${done ? 'done' : ''}" data-step="${stepIndex}" data-id="${submissionId}" title="Toggle: ${esc(label)}">
+                <span>${stepIndex}</span>
+                <span>${esc(label.replace(/ - Step \\d+ of \\d+$/, ''))}</span>
+              </button>
+            `;
+          }).join('');
+        }catch(e){
+          const td = document.querySelector(`tr[data-id="${submissionId}"] td[data-progress]`);
+          if (td) td.innerHTML = `<span class="sm" style="color:#dc2626">Error</span>`;
+        }
+      }
+
+      async function toggleStep(submissionId, stepIndex, makeComplete){
+        if (!requireTokenOrRedirect()) return;
+        try{
+          const res = await fetch('/api/admin/update-status', {
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json',
+              'Authorization':'Bearer ' + token
+            },
+            body: JSON.stringify({ submissionId, stepIndex, isComplete: !!makeComplete })
+          });
+          if (!res.ok) throw new Error('Update failed');
+          // Repaint just this row
+          loadRowProgress(submissionId);
+        }catch(e){
+          setStatus(e.message || 'Could not update status', 'error');
+        }
+      }
+
+      // Event: toggle clicks in the table (event delegation)
+      rowsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('button.step');
+        if (!btn) return;
+        const submissionId = Number(btn.getAttribute('data-id'));
+        const stepIndex = Number(btn.getAttribute('data-step'));
+        const makeComplete = !btn.classList.contains('done');
+        toggleStep(submissionId, stepIndex, makeComplete);
+      });
+
+      // Search
+      q.addEventListener('input', () => render(cache, q.value));
+
+      // Buttons
+      refreshBtn.addEventListener('click', fetchAll);
+      logoutBtn.addEventListener('click', () => {
+        try { sessionStorage.removeItem('admin_token'); } catch(_) {}
+        location.href = '/admin-login.html';
+      });
+
+      // Auto-refresh every 30s when logged in
+      function startAuto(){
+        clearInterval(timer);
+        if (requireTokenOrRedirect()) {
+          timer = setInterval(fetchAll, 30_000);
+        }
+      }
+
+      // Start
+      if (requireTokenOrRedirect()) {
+        fetchAll().then(startAuto);
       }
     })();
   </script>
