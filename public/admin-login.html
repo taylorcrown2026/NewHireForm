@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — Admin Login</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
   <style>
-    :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28); }
+    :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28); --err:#dc2626; }
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;padding:28px;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:grid;place-items:center}
     .shell{width:100%;max-width:560px;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden}
-    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center}
+    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center;background:#fff}
     header nav{display:flex;gap:10px}
     .link{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
     .body{padding:18px}
@@ -21,8 +22,8 @@
     input:focus{border-color:#ff8a4a;box-shadow:var(--focus)}
     .btn{margin-top:14px;appearance:none;border:none;border-radius:999px;background:var(--accent);color:#fff;padding:12px 16px;font-weight:900;cursor:pointer;width:100%;box-shadow:0 8px 16px rgba(255,106,33,.25)}
     .meta{min-height:20px;font-size:13px;color:#667085;margin-top:8px}
-    .meta.error{color:#dc2626}
-    .footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+    .meta.error{color:var(--err)}
+    .footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;background:#fff}
   </style>
 </head>
 <body>
@@ -34,21 +35,23 @@
         <a class="link" href="/dashboard.html">Dashboard</a>
       </nav>
     </header>
+
     <div class="body">
       <label for="email">Email</label>
-      <input id="email" type="email" placeholder="admin@example.com" />
+      <input id="email" type="email" placeholder="admin@example.com" autocomplete="username" />
       <label for="password">Password</label>
-      <input id="password" type="password" />
+      <input id="password" type="password" autocomplete="current-password" />
       <button class="btn" id="loginBtn">Login</button>
       <div class="meta" id="status"></div>
     </div>
+
     <div class="footer">
       <a class="link" href="/">Back to New Hire Form</a>
     </div>
   </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   console.log("admin-login: script loaded");
 
   const emailEl = document.getElementById('email');
@@ -56,33 +59,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn     = document.getElementById('loginBtn');
   const status  = document.getElementById('status');
 
-  if (!emailEl || !passEl || !btn) {
-    console.error("admin-login: required elements not found");
-    return;
-  }
-
   async function doLogin() {
-    const email = emailEl.value.trim();
-    const password = passEl.value;
+    const email = (emailEl.value || '').trim();
+    const password = passEl.value || '';
+    status.className = 'meta';
     status.textContent = '';
+
+    if (!email || !password) {
+      status.className = 'meta error';
+      status.textContent = 'Email and password are required.';
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({email, password})
       });
-      if(!res.ok){ throw new Error('Invalid login'); }
+      if(!res.ok){
+        const txt = await res.text();
+        throw new Error(txt || 'Invalid login');
+      }
       const data = await res.json();
       sessionStorage.setItem('admin_token', data.token);
       location.href = '/admin-portal.html';
     } catch(e) {
-      status.textContent = e.message;
       status.className = 'meta error';
+      status.textContent = e.message || 'Login failed';
     }
   }
 
   btn.addEventListener('click', doLogin);
-  // Pressing Enter submits:
+  // Press Enter to submit from either field
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') doLogin();
   });

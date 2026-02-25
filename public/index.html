@@ -16,66 +16,43 @@
       --ink-2:#0f172a; --line:#e7eaf3; --radius:18px;
       --shadow:0 12px 36px rgba(16,24,40,.10);
       --focus:0 0 0 3px rgba(255,106,33,.28);
+      --success:#16a34a; --error:#dc2626;
     }
-
     *{box-sizing:border-box;}
-
     body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
+      margin:0; background:var(--bg); color:var(--ink);
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       padding:28px;
     }
 
     /* ---------- TOP BAR ---------- */
     .topbar{
-      max-width:1200px;
-      margin:0 auto 12px;
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
+      max-width:1200px; margin:0 auto 12px;
+      display:flex; justify-content:flex-end; gap:10px;
     }
     .topbar a{
-      font-weight:800;
-      color:#111;
-      text-decoration:none;
-      border:1px solid var(--line);
-      padding:8px 12px;
-      border-radius:999px;
-      background:#fff;
+      font-weight:800; color:#111; text-decoration:none; border:1px solid var(--line);
+      padding:8px 12px; border-radius:999px; background:#fff;
     }
 
     /* ---------- HERO CONTAINER ---------- */
     .hero{
-      position:relative;
-      width:100%;
-      max-width:1200px;
-      margin:0 auto;
-      border-radius:calc(var(--radius) + 6px);
-      overflow:hidden;
+      position:relative; width:100%; max-width:1200px; margin:0 auto;
+      border-radius:calc(var(--radius) + 6px); overflow:hidden;
       background:linear-gradient(180deg,#ffffff,#fbfcff);
       box-shadow:var(--shadow);
     }
 
-    /* Background architectural SVG — use a single-line, URL-encoded data URI */
+    /* Background architectural SVG — single-line data URI */
     .bg-architecture{
-      position:absolute;
-      inset:0;
+      position:absolute; inset:0;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%23cfd6e6' stroke-width='1.2' opacity='0.35'%3E%3Cpath d='M60 520 L260 160 L520 240 L720 80 L980 160'/%3E%3Cpath d='M80 540 L280 180 L540 260 L740 100 L1000 180'/%3E%3Cpath d='M100 560 L300 200 L560 280 L760 120 L1020 200'/%3E%3Cpath d='M0 360 L240 280 L480 340 L760 300 L1100 360'/%3E%3Crect x='820' y='60' width='260' height='180' rx='4'/%3E%3Crect x='480' y='220' width='180' height='110' rx='4'/%3E%3Cline x1='980' y1='60' x2='980' y2='240'/%3E%3Cline x1='480' y1='220' x2='660' y2='330'/%3E%3C/g%3E%3C/svg%3E");
-      background-repeat:no-repeat;
-      background-position:center;
-      background-size:cover;
-      mix-blend-mode:multiply;
-      pointer-events:none;
+      background-repeat:no-repeat; background-position:center; background-size:cover;
+      mix-blend-mode:multiply; pointer-events:none;
     }
 
     .wave{
-      position:absolute;
-      left:-5%;
-      right:-5%;
-      bottom:-1px;
-      height:200px;
+      position:absolute; left:-5%; right:-5%; bottom:-1px; height:200px;
       background:
         radial-gradient(65% 120% at 20% 70%, rgba(255,106,33,.25), transparent 60%),
         radial-gradient(60% 120% at 80% 30%, rgba(255,106,33,.2), transparent 60%),
@@ -84,281 +61,110 @@
       opacity:.95;
     }
 
-    .content{
-      position:relative;
-      display:grid;
-      grid-template-columns:1.05fr 1fr;
-      min-height:720px;
-    }
-
-    @media(max-width:980px){
-      .content{ grid-template-columns:1fr; }
-    }
+    .content{ position:relative; display:grid; grid-template-columns:1.05fr 1fr; min-height:720px; }
+    @media(max-width:980px){ .content{ grid-template-columns:1fr; } }
 
     /* ---------- LEFT INFO PANEL ---------- */
-    .info{
-      padding:44px 46px 220px;
-      display:flex;
-      flex-direction:column;
-      gap:24px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      font-weight:800;
-      color:var(--ink-2);
-    }
-
+    .info{ padding:44px 46px 220px; display:flex; flex-direction:column; gap:24px; }
+    .brand{ display:flex; align-items:center; gap:14px; font-weight:800; color:var(--ink-2); }
     .brand img{ height:40px; width:auto; }
-
     .headline{ font-size: clamp(22px,3vw,30px); margin:6px 0 4px; }
     .sub{ color:var(--muted); max-width:60ch; }
 
     .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:18px;
-      display:grid;
-      gap:14px;
-      max-width:580px;
+      background:#fff; border:1px solid var(--line); border-radius:14px;
+      padding:18px; display:grid; gap:14px; max-width:580px;
     }
-
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-}
-
-
-.row svg.icon {
-  width: 22px;
-  height: 22px;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.row div strong {
-  display: block;
-  font-weight: 800;
-  color: var(--ink-2);
-}
-
-.row div span {
-  color: var(--muted);
-  display: block;
-  margin-top: 2px;
-  font-size: 14px;
-}
+    /* Clean, aligned rows */
+    .row{ display:flex; align-items:center; gap:12px; padding:10px 0; }
+    .row svg.icon{ width:22px; height:22px; color:var(--accent); flex-shrink:0; }
+    .row div strong{ display:block; font-weight:800; color:var(--ink-2); }
+    .row div span{ color:var(--muted); display:block; margin-top:2px; font-size:14px; }
 
     /* ---------- RIGHT WIZARD ---------- */
     .formWrap{
-      background:rgba(255,255,255,.88);
-      border-left:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:48px 44px;
+      background:rgba(255,255,255,.88); border-left:1px solid var(--line);
+      display:flex; align-items:center; justify-content:center; padding:48px 44px;
     }
-
     .wizard{
-      width:100%;
-      max-width:720px;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:0 12px 28px rgba(16,24,40,.08);
-      overflow:hidden;
+      width:100%; max-width:720px; background:#fff; border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:0 12px 28px rgba(16,24,40,.08); overflow:hidden;
     }
+    .wizard-header{ padding:16px 24px; border-bottom:1px solid var(--line); background:#fff; }
 
-    .wizard-header{
-      padding:16px 24px;
-      border-bottom:1px solid var(--line);
-      background:#fff;
-    }
-
-    .steps{
-      display:flex;
-      gap:16px;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-
-    .step{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex:1;
-      min-width:0;
-    }
-
+    .steps{ display:flex; gap:16px; justify-content:space-between; flex-wrap:wrap; }
+    .step{ display:flex; align-items:center; gap:12px; flex:1; min-width:0; }
     .dot{
-      width:34px;
-      height:34px;
-      border-radius:999px;
-      border:2px solid #e5e7eb;
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      font-size:12px;
-      color:#6b7280;
+      width:34px; height:34px; border-radius:999px; border:2px solid #e5e7eb;
+      display:grid; place-items:center; font-weight:800; font-size:12px; color:#6b7280;
     }
-
-    .step.active .dot{
-      border-color:var(--accent);
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .step.done .dot{
-      border-color:#16a34a;
-      background:#16a34a;
-      color:#fff;
-    }
-
-    .label{color:#475467;font-size:13px;font-weight:800;}
+    .step.active .dot{ border-color:var(--accent); background:var(--accent); color:#fff; }
+    .step.done .dot{ border-color:var(--success); background:var(--success); color:#fff; }
+    .label{ color:#475467; font-size:13px; font-weight:800; }
 
     /* ---------- PANELS ---------- */
-    form{padding:24px 24px 8px;}
+    form{ padding:24px 24px 8px; }
+    .panel{ min-height:420px; }
+    .panel[hidden]{ display:none!important; }
 
-    .panel{min-height:420px;}
-    .panel[hidden]{display:none!important;}
-
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-    }
-
-    .col-2{grid-column:span 2;}
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .col-2{ grid-column:span 2; }
     @media(max-width:780px){
-      .grid{grid-template-columns:1fr;}
-      .col-2{grid-column:1;}
+      .grid{ grid-template-columns:1fr; }
+      .col-2{ grid-column:1; }
     }
 
-    .control input,
-    .control select,
-    .control textarea{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:18px 16px;
-      font-size:16px;
-      background:#fff;
-      outline:none;
+    .control input, .control select, .control textarea{
+      width:100%; border:1px solid var(--line); border-radius:14px;
+      padding:18px 16px; font-size:16px; background:#fff; outline:none;
       transition:border-color .15s, box-shadow .15s;
     }
-
     .control label{
-      display:inline-block;
-      margin:0 0 10px 4px;
-      font-size:13px;
-      font-weight:800;
-      color:#344054;
+      display:inline-block; margin:0 0 10px 4px; font-size:13px; font-weight:800; color:#344054;
+    }
+    .control input:focus, .control select:focus, .control textarea:focus{
+      border-color:#ff8a4a; box-shadow:var(--focus);
     }
 
-    .control input:focus,
-    .control select:focus,
-    .control textarea:focus{
-      border-color:#ff8a4a;
-      box-shadow:var(--focus);
-    }
-
-    .chips{display:flex;flex-wrap:wrap;gap:14px;}
+    .chips{ display:flex; flex-wrap:wrap; gap:14px; }
     .chip{
-      padding:12px 14px;
-      border:1px solid var(--line);
-      border-radius:14px;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      background:#fff;
+      padding:12px 14px; border:1px solid var(--line); border-radius:14px;
+      display:inline-flex; align-items:center; gap:10px; background:#fff;
     }
+    .chip input{ accent-color:var(--accent); }
 
-    .chip input{accent-color:var(--accent);}
-
-    .box{
-      border:1px dashed var(--line);
-      border-radius:14px;
-      padding:16px;
-    }
+    .box{ border:1px dashed var(--line); border-radius:14px; padding:16px; }
 
     /* ---------- ACTIONS ---------- */
     .actions{
-      position:sticky;
-      bottom:0;
-      display:flex;
-      justify-content:space-between;
+      position:sticky; bottom:0; display:flex; justify-content:space-between;
       padding:14px 24px 20px;
       background:linear-gradient(180deg,rgba(255,255,255,0),#fff 40%);
       border-top:1px solid var(--line);
     }
-
     .btn{
-      appearance:none;
-      border:none;
-      cursor:pointer;
-      border-radius:999px;
-      padding:14px 20px;
-      font-weight:900;
-      font-size:15px;
+      appearance:none; border:none; cursor:pointer; border-radius:999px;
+      padding:14px 20px; font-weight:900; font-size:15px;
     }
+    .btn.secondary{ background:#fff; border:1px solid var(--line); }
+    .btn.primary{ background:var(--accent); color:#fff; box-shadow:0 8px 16px rgba(255,106,33,.25); }
 
-    .btn.secondary{
-      background:#fff;
-      border:1px solid var(--line);
-    }
-
-    .btn.primary{
-      background:var(--accent);
-      color:#fff;
-      box-shadow:0 8px 16px rgba(255,106,33,.25);
-    }
-
-    .status{
-      min-height:22px;
-      font-size:13px;
-      color:#667085;
-    }
-    .status.error{color:#dc2626;}
+    .status{ min-height:22px; font-size:13px; color:#667085; }
+    .status.error{ color:var(--error); }
 
     /* ---------- MODAL ---------- */
     .modal{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background:rgba(0,0,0,.45);
-      padding:20px;
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.45); padding:20px;
     }
-    .modal.active{display:flex;}
-
+    .modal.active{ display:flex; }
     .dialog{
-      background:#fff;
-      border-radius:16px;
-      box-shadow:var(--shadow);
-      max-width:520px;
-      width:100%;
+      background:#fff; border-radius:16px; box-shadow:var(--shadow);
+      max-width:520px; width:100%;
     }
-
-    .dialog header{
-      padding:14px 18px;
-      border-bottom:1px solid var(--line);
-      font-weight:800;
-    }
-
-    .dialog .body{padding:18px;}
-    .dialog .foot{
-      padding:14px 18px;
-      border-top:1px solid var(--line);
-      display:flex;
-      justify-content:flex-end;
-    }
+    .dialog header{ padding:14px 18px; border-bottom:1px solid var(--line); font-weight:800; }
+    .dialog .body{ padding:18px; }
+    .dialog .foot{ padding:14px 18px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; }
 
     /* Honeypot */
     .honeypot{ display:none; }
@@ -374,12 +180,10 @@
 
   <!-- HERO -->
   <div class="hero">
-
     <div class="bg-architecture"></div>
     <div class="wave"></div>
 
     <div class="content">
-
       <!-- LEFT -->
       <section class="info">
         <div class="brand">
@@ -388,26 +192,21 @@
         </div>
 
         <h2 class="headline">Step through the essentials—one section at a time.</h2>
-        <p class="sub">
-          This form walks you through all required steps to start a new hire.
-        </p>
+        <p class="sub">This form walks you through all required steps to start a new hire.</p>
 
         <div class="card">
           <div class="row">
             <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v2a2 2 0 0 1-2.2 2c-3.1-.3-6.1-1.6-8.5-4s-3.7-5.4-4-8.5A2 2 0 0 1 9.4 6h2a2 2 0 0 1 2 1.7c.1.9.4 1.7.8 2.5a2 2 0 0 1-.5 2.2l-.7.7a16 16 0 0 0 6 6l.7-.7a2 2 0 0 1 2.2-.5c.8.4 1.6.6 2.5.8A2 2 0 0 1 22 16.9z" stroke-width="1.4" stroke="currentColor"/></svg>
             <div><strong>Support</strong><span>940‑217‑8680</span></div>
           </div>
-
           <div class="row">
             <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 22s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z" stroke-width="1.6" stroke="currentColor"/><circle cx="12" cy="10" r="2.8" stroke-width="1.6" stroke="currentColor"/></svg>
             <div><strong>Primary Location</strong><span>Addison, TX</span></div>
           </div>
-
           <div class="row">
             <svg class="icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.6" stroke="currentColor"/><path d="M12 7v6l4 2" stroke-width="1.6" stroke="currentColor"/></svg>
             <div><strong>Business Hours</strong><span>Mon–Fri • 8:00AM–5:00PM CST</span></div>
           </div>
-
         </div>
       </section>
 
@@ -417,13 +216,13 @@
           <div class="wizard-header">
             <div class="steps" id="stepper">
               <div class="step active"><div class="dot">1</div><div class="label">Contact</div></div>
-              <div class="step"><div class="dot">2</div><div class="label">Role & Software</div></div>
+              <div class="step"><div class="dot">2</div><div class="label">Role &amp; Software</div></div>
               <div class="step"><div class="dot">3</div><div class="label">Equipment</div></div>
-              <div class="step"><div class="dot">4</div><div class="label">Notes & Submit</div></div>
+              <div class="step"><div class="dot">4</div><div class="label">Notes &amp; Submit</div></div>
             </div>
           </div>
 
-          <form id="newHireForm">
+          <form id="newHireForm" novalidate>
             <input type="text" class="honeypot" name="website" />
 
             <!-- STEP 1 -->
@@ -506,33 +305,33 @@
                     <label class="chip"><input type="radio" name="advancedConfig" value="No" required> No</label>
                   </div>
                 </div>
-<div class="chips col-2" style="margin-top:10px;">
-  <label class="chip"><input type="checkbox" name="equipment" value="Standard Laptop"> Standard Laptop</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Dell Pro Max Laptop"> Dell Pro Max Laptop</label>
-  
-  <label class="chip"><input type="checkbox" name="equipment" value="Standard Dock"> Standard Dock</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="WD25 Dock"> WD25 Dock</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Monitor"> Monitor (1) [ +$140 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Second Monitor"> Second Monitor (1) [ +$140 ]</label>
+                <div class="chips col-2" style="margin-top:10px;">
+                  <label class="chip"><input type="checkbox" name="equipment" value="Standard Laptop"> Standard Laptop</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Dell Pro Max Laptop"> Dell Pro Max Laptop</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Standard Dock"> Standard Dock</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="WD25 Dock"> WD25 Dock</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Wired Keyboard"> Wired Keyboard [ +$17 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Wired Mouse"> Wired Mouse [ +$14 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Monitor"> Monitor (1) [ +$140 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Second Monitor"> Second Monitor (1) [ +$140 ]</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Wireless Keyboard"> Wireless Keyboard [ +$27 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Wireless Mouse"> Wireless Mouse [ +$15 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Wired Keyboard"> Wired Keyboard [ +$17 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Wired Mouse"> Wired Mouse [ +$14 ]</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Docking Station"> Docking Station [ +$170 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Wireless Keyboard"> Wireless Keyboard [ +$27 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Wireless Mouse"> Wireless Mouse [ +$15 ]</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Laptop Backpack"> Laptop Backpack [ +$45 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Laptop Carrying Case"> Laptop Carrying Case [ +$45 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Docking Station"> Docking Station [ +$170 ]</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Monitor Cable"> Monitor Cable [ +$16 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Surge Protector"> Surge Protector [ +$13 ]</label>
-  <label class="chip"><input type="checkbox" name="equipment" value="Patch Cable"> Patch Cable [ +$8 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Laptop Backpack"> Laptop Backpack [ +$45 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Laptop Carrying Case"> Laptop Carrying Case [ +$45 ]</label>
 
-  <label class="chip"><input type="checkbox" name="equipment" value="Phone Ext"> Phone Ext</label>
-</div>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Monitor Cable"> Monitor Cable [ +$16 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Surge Protector"> Surge Protector [ +$13 ]</label>
+                  <label class="chip"><input type="checkbox" name="equipment" value="Patch Cable"> Patch Cable [ +$8 ]</label>
+
+                  <label class="chip"><input type="checkbox" name="equipment" value="Phone Ext"> Phone Ext</label>
+                </div>
               </div>
             </div>
 
@@ -543,12 +342,10 @@
                   <label>Systems / Access Notes</label>
                   <textarea name="accessNotes"></textarea>
                 </div>
-
                 <div class="control col-2">
                   <label>Additional Notes</label>
                   <textarea name="notes"></textarea>
                 </div>
-
                 <label class="chip col-2" style="cursor:pointer;">
                   <input type="checkbox" required> I confirm the information is accurate.
                 </label>
@@ -568,7 +365,6 @@
           </form>
         </div>
       </section>
-
     </div>
   </div>
 
@@ -586,140 +382,183 @@
     </div>
   </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("new-hire: script loaded");
+  <script>
+    // Robust wizard with panel validation (including required radio groups)
+    window.addEventListener("DOMContentLoaded", () => {
+      const panels = [...document.querySelectorAll(".panel")];
+      const steps  = [...document.querySelectorAll(".step")];
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const submitBtn = document.getElementById("submitBtn");
+      const statusEl = document.getElementById("status");
+      const form = document.getElementById("newHireForm");
 
-  const panels = [...document.querySelectorAll(".panel")];
-  const steps  = [...document.querySelectorAll(".step")];
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const submitBtn = document.getElementById("submitBtn");
-  const statusEl = document.getElementById("status");
-  const form = document.getElementById("newHireForm");
-
-  if (!panels.length || !steps.length || !prevBtn || !nextBtn || !submitBtn || !form) {
-    console.error("new-hire: required elements not found");
-    return;
-  }
-
-  let current = 0;
-  function showPanel(i){
-    panels.forEach((p,x)=>p.hidden = x !== i);
-    steps.forEach((s,x)=>{
-      s.classList.remove("active","done");
-      if(x < i) s.classList.add("done");
-      if(x === i) s.classList.add("active");
-    });
-    prevBtn.disabled = i===0;
-    nextBtn.hidden   = i===panels.length-1;
-    submitBtn.hidden = i!==panels.length-1;
-  }
-
-  showPanel(0);
-
-  nextBtn.onclick = () => {
-    const inputs = panels[current].querySelectorAll("input,select,textarea");
-    for(const el of inputs){
-      if(el.required && !el.value && el.type!=="radio"){
-        statusEl.textContent = "Please complete required fields.";
-        statusEl.classList.add("error");
+      if (!panels.length || !steps.length || !prevBtn || !nextBtn || !submitBtn || !form) {
+        console.error("new-hire: required elements not found");
         return;
       }
-    }
-    statusEl.textContent = "";
-    if(current < panels.length-1) showPanel(++current);
-  };
 
-  prevBtn.onclick = () => { if(current > 0) showPanel(--current); };
+      let current = 0;
 
-  // Show/hide "Other Software"
-  const swOther = document.getElementById("swOther");
-  if (swOther) {
-    swOther.addEventListener("change", e=>{
-      const wrap = document.getElementById("otherSoftwareWrap");
-      if (wrap) wrap.hidden = !e.target.checked;
-    });
-  }
+      function showPanel(i){
+        panels.forEach((p,x)=>p.hidden = x !== i);
+        steps.forEach((s,x)=>{
+          s.classList.remove("active","done");
+          if(x < i) s.classList.add("done");
+          if(x === i) s.classList.add("active");
+        });
+        prevBtn.disabled = i===0;
+        nextBtn.hidden   = i===panels.length-1;
+        submitBtn.hidden = i!==panels.length-1;
+        statusEl.textContent = "";
+        statusEl.classList.remove("error");
+      }
 
-  // Submit handler
-  form.addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    statusEl.textContent = "Submitting...";
+      function validatePanel(i){
+        const panel = panels[i];
+        const fields = panel.querySelectorAll("input,select,textarea");
 
-    if(form.website && form.website.value){ return; }
+        // Validate radios by group
+        const radioGroups = new Map();
+        fields.forEach(el=>{
+          if (el.type === "radio" && el.required) {
+            radioGroups.set(el.name, panel.querySelectorAll(`input[type="radio"][name="${el.name}"]`));
+          }
+        });
+        for (const [name, group] of radioGroups) {
+          const anyChecked = [...group].some(r=>r.checked);
+          if (!anyChecked) {
+            return `Please select an option for "${name.replace(/([A-Z])/g,' $1').trim()}".`;
+          }
+        }
 
-    const data = {
-      fullName:form.fullName.value,
-      personalEmail:form.personalEmail.value,
-      startDate:form.startDate.value,
-      jobTitle:form.jobTitle.value,
-      department:form.department.value,
-      manager:form.manager.value,
-      office:form.office.value,
-      software:[...form.querySelectorAll("input[name='software']:checked")].map(x=>x.value),
-      equipment:[...form.querySelectorAll("input[name='equipment']:checked")].map(x=>x.value),
-      notes:form.notes.value,
-      accessNotes:form.accessNotes.value,
-    };
+        // Validate other required fields
+        for (const el of fields) {
+          if (el.required && el.type !== "radio") {
+            if (!el.value || (el.tagName === "SELECT" && !el.value)) {
+              const label = (panel.querySelector(`label[for="${el.name}"]`)?.textContent)
+                || (el.closest(".control")?.querySelector("label")?.textContent)
+                || el.name;
+              return `Please complete required field: ${label.replace('*','').trim()}.`;
+            }
+          }
+        }
+        return ""; // valid
+      }
 
-    try{
-      const res = await fetch("/api/submit", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(data)
+      function next(){
+        const msg = validatePanel(current);
+        if (msg) {
+          statusEl.textContent = msg;
+          statusEl.classList.add("error");
+          return;
+        }
+        if(current < panels.length-1) showPanel(++current);
+      }
+
+      function prev(){ if(current > 0) showPanel(--current); }
+
+      showPanel(0);
+      nextBtn.addEventListener("click", next);
+      prevBtn.addEventListener("click", prev);
+
+      // Show/hide "Other Software" input
+      const swOther = document.getElementById("swOther");
+      if (swOther) {
+        swOther.addEventListener("change", e=>{
+          const wrap = document.getElementById("otherSoftwareWrap");
+          if (wrap) wrap.hidden = !e.target.checked;
+        });
+      }
+
+      // Auto-apply software when "Is Manager?" is Yes
+      document.querySelectorAll("input[name='isManager']").forEach(radio => {
+        radio.addEventListener("change", () => {
+          const isMgr = radio.value === "Yes";
+          const adobePro = [...document.querySelectorAll("input[name='software']")]
+            .find(x => x.value === "Adobe Pro");
+          const zoomPaid = [...document.querySelectorAll("input[name='software']")]
+            .find(x => x.value === "Zoom Paid");
+          if (isMgr) {
+            if (adobePro) adobePro.checked = true;
+            if (zoomPaid)  zoomPaid.checked  = true;
+          }
+        });
       });
-      if(!res.ok){
-        throw new Error((await res.text()) || "Server error");
-      }
-      const json = await res.json();
-      const id = json.submissionId;
 
-      const modal = document.getElementById("confirmModal");
-      if (modal) modal.classList.add("active");
+      // Auto-select equipment when "Advanced Technical Config" is Yes
+      document.querySelectorAll("input[name='advancedConfig']").forEach(radio => {
+        radio.addEventListener("change", () => {
+          const advanced = radio.value === "Yes";
+          const proLaptop = [...document.querySelectorAll("input[name='equipment']")]
+            .find(x => x.value === "Dell Pro Max Laptop");
+          const wdDock = [...document.querySelectorAll("input[name='equipment']")]
+            .find(x => x.value === "WD25 Dock");
+          if (advanced) {
+            if (proLaptop) proLaptop.checked = true;
+            if (wdDock)    wdDock.checked    = true;
+          }
+        });
+      });
 
-      const go = document.getElementById("goToDashboardBtn");
-      if (go) go.onclick = () => { window.location.href = `/dashboard.html?id=${id}`; };
+      // Submit handler
+      form.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+        const finalMsg = validatePanel(current);
+        if (finalMsg) {
+          statusEl.textContent = finalMsg;
+          statusEl.classList.add("error");
+          return;
+        }
 
-      form.reset();
-      showPanel(current=0);
+        statusEl.textContent = "Submitting...";
 
-    }catch(err){
-      statusEl.textContent = "Error: " + err.message;
-      statusEl.classList.add("error");
-    }
-  });
+        // Honeypot
+        if(form.website && form.website.value){ return; }
 
-  // Auto-apply selections (same logic, just guarded)
-  document.querySelectorAll("input[name='isManager']").forEach(radio => {
-    radio.addEventListener("change", () => {
-      const isMgr = radio.value === "Yes";
-      const adobePro = [...document.querySelectorAll("input[name='software']")]
-        .find(x => x.value === "Adobe Pro");
-      const zoomPaid = [...document.querySelectorAll("input[name='software']")]
-        .find(x => x.value === "Zoom Paid");
-      if (isMgr) {
-        if (adobePro) adobePro.checked = true;
-        if (zoomPaid) zoomPaid.checked = true;
-      }
+        const data = {
+          fullName:form.fullName.value,
+          personalEmail:form.personalEmail.value,
+          startDate:form.startDate.value,
+          jobTitle:form.jobTitle.value,
+          department:form.department.value,
+          manager:form.manager.value,
+          office:form.office.value,
+          software:[...form.querySelectorAll("input[name='software']:checked")].map(x=>x.value),
+          equipment:[...form.querySelectorAll("input[name='equipment']:checked")].map(x=>x.value),
+          notes:form.notes.value,
+          accessNotes:form.accessNotes.value,
+        };
+
+        try{
+          const res = await fetch("/api/submit", {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(data)
+          });
+          if(!res.ok){
+            throw new Error((await res.text()) || "Server error");
+          }
+          const json = await res.json();
+          const id = json.submissionId;
+
+          // Show modal
+          const modal = document.getElementById("confirmModal");
+          if (modal) modal.classList.add("active");
+
+          const goBtn = document.getElementById("goToDashboardBtn");
+          if (goBtn) goBtn.onclick = ()=>{ window.location.href = `/dashboard.html?id=${id}`; };
+
+          form.reset();
+          showPanel(current=0);
+          statusEl.textContent = "";
+
+        }catch(err){
+          statusEl.textContent = "Error: " + err.message;
+          statusEl.classList.add("error");
+        }
+      });
     });
-  });
-
-  document.querySelectorAll("input[name='advancedConfig']").forEach(radio => {
-    radio.addEventListener("change", () => {
-      const advanced = radio.value === "Yes";
-      const proLaptop = [...document.querySelectorAll("input[name='equipment']")]
-        .find(x => x.value === "Dell Pro Max Laptop");
-      const wdDock = [...document.querySelectorAll("input[name='equipment']")]
-        .find(x => x.value === "WD25 Dock");
-      if (advanced) {
-        if (proLaptop) proLaptop.checked = true;
-        if (wdDock) wdDock.checked = true;
-      }
-    });
-  });
-});
-</script>
-
+  </script>
 </body>
 </html>
