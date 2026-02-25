@@ -24,7 +24,7 @@ app.post('/api/newhire-email', async (req, res) => {
     const apiKey = process.env.BREVO_API_KEY;
     if (!apiKey) return res.status(500).json({ error: 'Server not configured (missing BREVO_API_KEY)' });
 
-    const senderEmail = process.env.SENDER_EMAIL || 'no-reply@yourdomain.com';
+    const senderEmail = process.env.SENDER_EMAIL || 'tcrownover@concentra.com';
     const senderName  = process.env.SENDER_NAME || 'Concentra HR New Hire';
 
     const r = await fetch('https://api.brevo.com/v3/smtp/email', {
