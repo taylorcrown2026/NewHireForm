@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +31,8 @@
       <img src="/assets/concentra-logo.png" alt="Concentra" />
       <span>Restricted Access</span>
     </header>
-    <form id="f" autocomplete="off">
+    <!-- Add action/method so login works even without JS -->
+    <form id="f" autocomplete="off" action="/login" method="post">
       <div>
         <label for="password">Team Password</label>
         <input id="password" name="password" type="password" placeholder="Enter password" required />
@@ -45,19 +47,20 @@
   </div>
 
   <script>
+    // Keep JS enhancement (shows inline errors + redirects) but server also handles non-JS POST
     const form = document.getElementById('f');
     const err = document.getElementById('err');
     form.addEventListener('submit', async (e)=>{
       e.preventDefault(); err.textContent='';
-      const password = document.getElementById('password').value;
-      if(!password) { err.textContent='Password required'; return; }
+      const formData = new URLSearchParams(new FormData(form));
       try{
-        const res = await fetch('/login', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams({password}) });
+        const res = await fetch('/login', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: formData });
         const json = await res.json();
         if(!json.ok){ err.textContent = json.error || 'Invalid password'; return; }
         window.location.href = '/';
       }catch{
-        err.textContent='Unable to sign in right now';
+        // Fall back to normal form POST (no JS) if fetch fails
+        form.submit();
       }
     });
   </script>
