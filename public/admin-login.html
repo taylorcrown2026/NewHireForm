@@ -47,23 +47,46 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById('loginBtn').onclick = async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const status = document.getElementById('status');
-      status.textContent = '';
-      try{
-        const res = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password})});
-        if(!res.ok){ throw new Error('Invalid login'); }
-        const data = await res.json();
-        sessionStorage.setItem('admin_token', data.token);
-        location.href = '/admin-portal.html';
-      }catch(e){
-        status.textContent = e.message;
-        status.className = 'meta error';
-      }
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("admin-login: script loaded");
+
+  const emailEl = document.getElementById('email');
+  const passEl  = document.getElementById('password');
+  const btn     = document.getElementById('loginBtn');
+  const status  = document.getElementById('status');
+
+  if (!emailEl || !passEl || !btn) {
+    console.error("admin-login: required elements not found");
+    return;
+  }
+
+  async function doLogin() {
+    const email = emailEl.value.trim();
+    const password = passEl.value;
+    status.textContent = '';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({email, password})
+      });
+      if(!res.ok){ throw new Error('Invalid login'); }
+      const data = await res.json();
+      sessionStorage.setItem('admin_token', data.token);
+      location.href = '/admin-portal.html';
+    } catch(e) {
+      status.textContent = e.message;
+      status.className = 'meta error';
     }
-  </script>
+  }
+
+  btn.addEventListener('click', doLogin);
+  // Pressing Enter submits:
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+</script>
 </body>
 </html>

@@ -587,136 +587,136 @@
   </div>
 
 <script>
-/* ========== JS WIZARD LOGIC (clean) ========== */
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("new-hire: script loaded");
 
-const panels = [...document.querySelectorAll(".panel")];
-const steps = [...document.querySelectorAll(".step")];
-let current = 0;
+  const panels = [...document.querySelectorAll(".panel")];
+  const steps  = [...document.querySelectorAll(".step")];
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const statusEl = document.getElementById("status");
+  const form = document.getElementById("newHireForm");
 
-function showPanel(i){
-  panels.forEach((p,x)=>p.hidden = x !== i);
-  steps.forEach((s,x)=>{
-    s.classList.remove("active","done");
-    if(x < i) s.classList.add("done");
-    if(x === i) s.classList.add("active");
-  });
-
-  document.getElementById("prevBtn").disabled = i===0;
-  document.getElementById("nextBtn").hidden = i===panels.length-1;
-  document.getElementById("submitBtn").hidden = i!==panels.length-1;
-}
-
-showPanel(0);
-
-document.getElementById("nextBtn").onclick = ()=>{
-  const inputs = panels[current].querySelectorAll("input,select,textarea");
-  for(const el of inputs){
-    if(el.required && !el.value && el.type!=="radio"){
-      document.getElementById("status").textContent = "Please complete required fields.";
-      document.getElementById("status").classList.add("error");
-      return;
-    }
+  if (!panels.length || !steps.length || !prevBtn || !nextBtn || !submitBtn || !form) {
+    console.error("new-hire: required elements not found");
+    return;
   }
-  document.getElementById("status").textContent = "";
-  if(current < panels.length-1) showPanel(++current);
-};
 
-document.getElementById("prevBtn").onclick = ()=>{
-  if(current > 0) showPanel(--current);
-};
+  let current = 0;
+  function showPanel(i){
+    panels.forEach((p,x)=>p.hidden = x !== i);
+    steps.forEach((s,x)=>{
+      s.classList.remove("active","done");
+      if(x < i) s.classList.add("done");
+      if(x === i) s.classList.add("active");
+    });
+    prevBtn.disabled = i===0;
+    nextBtn.hidden   = i===panels.length-1;
+    submitBtn.hidden = i!==panels.length-1;
+  }
 
-/* Show/hide "Other Software" input */
-const swOther = document.getElementById("swOther");
-if (swOther) {
-  swOther.addEventListener("change", e=>{
-    document.getElementById("otherSoftwareWrap").hidden = !e.target.checked;
-  });
-}
+  showPanel(0);
 
-/* Submit handler */
-const form = document.getElementById("newHireForm");
-form.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  document.getElementById("status").textContent = "Submitting...";
-
-  if(form.website.value){ return; }
-
-  const data = {
-    fullName:form.fullName.value,
-    personalEmail:form.personalEmail.value,
-    startDate:form.startDate.value,
-    jobTitle:form.jobTitle.value,
-    department:form.department.value,
-    manager:form.manager.value,
-    office:form.office.value,
-    software:[...form.querySelectorAll("input[name='software']:checked")].map(x=>x.value),
-    equipment:[...form.querySelectorAll("input[name='equipment']:checked")].map(x=>x.value),
-    notes:form.notes.value,
-    accessNotes:form.accessNotes.value,
+  nextBtn.onclick = () => {
+    const inputs = panels[current].querySelectorAll("input,select,textarea");
+    for(const el of inputs){
+      if(el.required && !el.value && el.type!=="radio"){
+        statusEl.textContent = "Please complete required fields.";
+        statusEl.classList.add("error");
+        return;
+      }
+    }
+    statusEl.textContent = "";
+    if(current < panels.length-1) showPanel(++current);
   };
 
-  try{
-    const res = await fetch("/api/submit", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(data)
+  prevBtn.onclick = () => { if(current > 0) showPanel(--current); };
+
+  // Show/hide "Other Software"
+  const swOther = document.getElementById("swOther");
+  if (swOther) {
+    swOther.addEventListener("change", e=>{
+      const wrap = document.getElementById("otherSoftwareWrap");
+      if (wrap) wrap.hidden = !e.target.checked;
     });
+  }
 
-    if(!res.ok){
-      throw new Error(await res.text() || "Server error");
-    }
+  // Submit handler
+  form.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    statusEl.textContent = "Submitting...";
 
-    const json = await res.json();
-    const id = json.submissionId;
+    if(form.website && form.website.value){ return; }
 
-    /* Show modal */
-    const modal = document.getElementById("confirmModal");
-    modal.classList.add("active");
-
-    document.getElementById("goToDashboardBtn").onclick = ()=>{
-      window.location.href = `/dashboard.html?id=${id}`;
+    const data = {
+      fullName:form.fullName.value,
+      personalEmail:form.personalEmail.value,
+      startDate:form.startDate.value,
+      jobTitle:form.jobTitle.value,
+      department:form.department.value,
+      manager:form.manager.value,
+      office:form.office.value,
+      software:[...form.querySelectorAll("input[name='software']:checked")].map(x=>x.value),
+      equipment:[...form.querySelectorAll("input[name='equipment']:checked")].map(x=>x.value),
+      notes:form.notes.value,
+      accessNotes:form.accessNotes.value,
     };
 
-    form.reset();
-    showPanel(current=0);
+    try{
+      const res = await fetch("/api/submit", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+      });
+      if(!res.ok){
+        throw new Error((await res.text()) || "Server error");
+      }
+      const json = await res.json();
+      const id = json.submissionId;
 
-  }catch(err){
-    document.getElementById("status").textContent = "Error: "+err.message;
-    document.getElementById("status").classList.add("error");
-  }
-});
-/* Auto‑apply software when "Is Manager?" is Yes */
-document.querySelectorAll("input[name='isManager']").forEach(radio => {
-  radio.addEventListener("change", () => {
-    const isMgr = radio.value === "Yes";
+      const modal = document.getElementById("confirmModal");
+      if (modal) modal.classList.add("active");
 
-    const adobePro = [...document.querySelectorAll("input[name='software']")]
-      .find(x => x.value === "Adobe Pro");
+      const go = document.getElementById("goToDashboardBtn");
+      if (go) go.onclick = () => { window.location.href = `/dashboard.html?id=${id}`; };
 
-    const zoomPaid = [...document.querySelectorAll("input[name='software']")]
-      .find(x => x.value === "Zoom Paid");
+      form.reset();
+      showPanel(current=0);
 
-    if (isMgr) {
-      adobePro.checked = true;
-      zoomPaid.checked = true;
+    }catch(err){
+      statusEl.textContent = "Error: " + err.message;
+      statusEl.classList.add("error");
     }
   });
-});
-/* Auto‑select equipment when "Advanced Technical Config" is Yes */
-document.querySelectorAll("input[name='advancedConfig']").forEach(radio => {
-  radio.addEventListener("change", () => {
-    const advanced = radio.value === "Yes";
 
-    const proLaptop = [...document.querySelectorAll("input[name='equipment']")]
-      .find(x => x.value === "Dell Pro Max Laptop");
+  // Auto-apply selections (same logic, just guarded)
+  document.querySelectorAll("input[name='isManager']").forEach(radio => {
+    radio.addEventListener("change", () => {
+      const isMgr = radio.value === "Yes";
+      const adobePro = [...document.querySelectorAll("input[name='software']")]
+        .find(x => x.value === "Adobe Pro");
+      const zoomPaid = [...document.querySelectorAll("input[name='software']")]
+        .find(x => x.value === "Zoom Paid");
+      if (isMgr) {
+        if (adobePro) adobePro.checked = true;
+        if (zoomPaid) zoomPaid.checked = true;
+      }
+    });
+  });
 
-    const wdDock = [...document.querySelectorAll("input[name='equipment']")]
-      .find(x => x.value === "WD25 Dock");
-
-    if (advanced) {
-      proLaptop.checked = true;
-      wdDock.checked = true;
-    }
+  document.querySelectorAll("input[name='advancedConfig']").forEach(radio => {
+    radio.addEventListener("change", () => {
+      const advanced = radio.value === "Yes";
+      const proLaptop = [...document.querySelectorAll("input[name='equipment']")]
+        .find(x => x.value === "Dell Pro Max Laptop");
+      const wdDock = [...document.querySelectorAll("input[name='equipment']")]
+        .find(x => x.value === "WD25 Dock");
+      if (advanced) {
+        if (proLaptop) proLaptop.checked = true;
+        if (wdDock) wdDock.checked = true;
+      }
+    });
   });
 });
 </script>
