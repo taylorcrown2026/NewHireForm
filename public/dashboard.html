@@ -4,27 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — New Hire Dashboard</title>
-  https://fonts.googleapis.com
-  https://fonts.gstatic.com
-  https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
   <style>
-    :root{
-      --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21;
-      --ink-2:#0f172a; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28);
-    }
+    :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --ink-2:#0f172a; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus:0 0 0 3px rgba(255,106,33,.28); }
     *{box-sizing:border-box}
     html, body{height:100%}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:28px}
     .shell{max-width:1200px;margin:0 auto;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden;position:relative}
-    header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:#fff}
-    header .left{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink-2)}
-    header .right a{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
+    header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line);background:#fff}
+    .title{display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink-2)}
+    .nav{display:flex;gap:10px}
+    .nav a{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
+
     main{padding:28px;display:grid;grid-template-columns:1.05fr 1fr;gap:24px}
     @media (max-width:980px){main{grid-template-columns:1fr}}
     .info{display:flex;flex-direction:column;gap:14px}
     .headline{font-size:clamp(20px,3vw,28px);margin:6px 0 4px}
     .sub{color:var(--muted);max-width:60ch}
-    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px}
+    .callout{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
 
     .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 12px 28px rgba(16,24,40,.08);overflow:hidden}
     .panel header{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;font-weight:800}
@@ -47,17 +46,18 @@
 </head>
 <body>
   <div class="shell">
-    <header>
-      <div class="left">New Hire Dashboard</div>
-      <div class="right">/admin-login.htmlAdmin Login</a></div>
+    <header class="top">
+      <div class="title">New Hire Dashboard</div>
+      <nav class="nav"><a href="/">New Hire Form</a><a href="/admin-login.html">Admin Login</a></nav>
     </header>
 
     <main>
       <section class="info">
         <h2 class="headline">Track your request in real time.</h2>
         <p class="sub">Paste your <strong>Submission ID</strong> if it’s not prefilled, then view the 8‑step progress below.</p>
-        <div class="card">
-          <div><strong>Tip</strong><div class="meta">You can bookmark the dashboard URL with your Submission ID for quick access later.</div></div>
+        <div class="callout">
+          <strong>Tip</strong>
+          <div class="meta">Bookmark this page with your Submission ID in the URL to return quickly later.</div>
         </div>
       </section>
 

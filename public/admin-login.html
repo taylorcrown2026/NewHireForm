@@ -4,15 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — Admin Login</title>
-  https://fonts.googleapis.com
-  https://fonts.gstatic.com
-  https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
   <style>
     :root{ --bg:#f6f7fb; --card:#ffffff; --ink:#101828; --muted:#667085; --accent:#ff6a21; --line:#e7eaf3; --radius:18px; --shadow: 0 12px 36px rgba(16,24,40,.10); --focus: 0 0 0 3px rgba(255,106,33,.28); }
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;padding:28px;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:grid;place-items:center}
     .shell{width:100%;max-width:560px;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid var(--line);border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);overflow:hidden}
-    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800}
+    header{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between;align-items:center}
+    header nav{display:flex;gap:10px}
+    .link{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
     .body{padding:18px}
     label{display:block;margin:0 0 6px 2px;font-size:13px;color:#344054;font-weight:800}
     input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 12px;font-size:16px;outline:none;background:#fff;color:#101828}
@@ -21,12 +23,17 @@
     .meta{min-height:20px;font-size:13px;color:#667085;margin-top:8px}
     .meta.error{color:#dc2626}
     .footer{padding:14px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
-    .link{font-weight:800;color:#111;text-decoration:none;border:1px solid var(--line);padding:8px 12px;border-radius:999px;background:#fff}
   </style>
 </head>
 <body>
   <div class="shell">
-    <header>Admin Login</header>
+    <header>
+      <div>Admin Login</div>
+      <nav>
+        <a class="link" href="/">New Hire Form</a>
+        <a class="link" href="/dashboard.html">Dashboard</a>
+      </nav>
+    </header>
     <div class="body">
       <label for="email">Email</label>
       <input id="email" type="email" placeholder="admin@example.com" />
@@ -36,7 +43,7 @@
       <div class="meta" id="status"></div>
     </div>
     <div class="footer">
-      <a class="link" href="/dashboard.html">Back to Dashboard</a>
+      <a class="link" href="/">Back to New Hire Form</a>
     </div>
   </div>
 
