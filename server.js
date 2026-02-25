@@ -27,20 +27,26 @@ app.post('/api/newhire-email', async (req, res) => {
     const senderEmail = process.env.SENDER_EMAIL || 'tcrownover@concentra.com';
     const senderName  = process.env.SENDER_NAME || 'Concentra HR New Hire';
 
-    const r = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'api-key': apiKey,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        sender: { name: senderName, email: senderEmail },
-        to: [{ email: to }],
-        subject,
-        htmlContent: html
-      })
-    });
+const r = await fetch("https://api.brevo.com/v3/smtp/email", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "api-key": apiKey,
+    "content-type": "application/json"
+  },
+  body: JSON.stringify({
+    sender: { 
+      name: senderName, 
+      email: "no-reply@brevo.com" // FIX
+    },
+    replyTo: {
+      email: senderEmail // So replies still go to you
+    },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html
+  })
+});
 
     const text = await r.text();
     if (!r.ok) return res.status(r.status).send(text);
