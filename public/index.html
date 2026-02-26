@@ -4,9 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Concentra — New Hire Form (Email Draft Version)</title>
+
+  <!-- Google Fonts (allowed by CSP) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- App CSS -->
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
@@ -35,6 +39,7 @@
           </div>
         </div>
       </section>
+
       <section class="formWrap">
         <div class="wizard" id="wizard">
           <div class="wizard-header">
@@ -45,35 +50,19 @@
               <div class="step"><div class="dot">4</div><div class="label">Notes &amp; Submit</div></div>
             </div>
           </div>
+
           <form id="newHireForm" novalidate>
             <input type="text" class="honeypot" name="website" />
+
             <!-- STEP 1 -->
             <div class="panel" data-step="1">
               <div class="grid">
-                <div class="control">
-                  <label>Full Name *</label>
-                  <input name="fullName" required />
-                </div>
-                <div class="control">
-                  <label>Personal Email *</label>
-                  <input name="personalEmail" type="email" required />
-                </div>
-                <div class="control">
-                  <label>Start Date *</label>
-                  <input name="startDate" type="date" required />
-                </div>
-                <div class="control">
-                  <label>Job Title *</label>
-                  <input name="jobTitle" required />
-                </div>
-                <div class="control">
-                  <label>Department</label>
-                  <input name="department" />
-                </div>
-                <div class="control">
-                  <label>Manager</label>
-                  <input name="manager" />
-                </div>
+                <div class="control"><label>Full Name *</label><input name="fullName" required /></div>
+                <div class="control"><label>Personal Email *</label><input name="personalEmail" type="email" required /></div>
+                <div class="control"><label>Start Date *</label><input name="startDate" type="date" required /></div>
+                <div class="control"><label>Job Title *</label><input name="jobTitle" required /></div>
+                <div class="control"><label>Department</label><input name="department" /></div>
+                <div class="control"><label>Manager</label><input name="manager" /></div>
                 <div class="control col-2">
                   <label>Office Location *</label>
                   <select name="office" required>
@@ -84,6 +73,7 @@
                 </div>
               </div>
             </div>
+
             <!-- STEP 2 -->
             <div class="panel" data-step="2" hidden>
               <div class="grid">
@@ -113,6 +103,7 @@
                 </div>
               </div>
             </div>
+
             <!-- STEP 3 -->
             <div class="panel" data-step="3" hidden>
               <div class="grid">
@@ -144,6 +135,7 @@
                 </div>
               </div>
             </div>
+
             <!-- STEP 4 -->
             <div class="panel" data-step="4" hidden>
               <div class="grid">
@@ -155,14 +147,15 @@
                   <label>Additional Notes</label>
                   <textarea name="notes"></textarea>
                 </div>
-                <label class="chip col-2" style="cursor:pointer;">
+                <label class="chip col-2 cursor-pointer">
                   <input type="checkbox" required> I confirm the information is accurate.
                 </label>
               </div>
             </div>
+
             <div class="actions">
               <div id="status" class="status"></div>
-              <div style="display:flex;gap:12px;">
+              <div class="row-flex">
                 <button type="button" class="btn secondary" id="prevBtn">Back</button>
                 <button type="button" class="btn primary" id="nextBtn">Next</button>
                 <button type="submit" class="btn primary" id="submitBtn" hidden>Submit</button>
@@ -175,6 +168,8 @@
   </div>
 
   <div class="toast" id="toast">Copied details — paste into the message body if needed (Ctrl/⌘+V).</div>
+
+  <!-- App JS (no inline scripts per CSP) -->
   <script src="/assets/app.js" defer></script>
 </body>
 </html>
